@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-plain-service
+spec:
+  selector:
+    app: helloworldapp
+  ports:
+  - protocol: "TCP"
+    name: "app"
+    port: 6000
+    targetPort: 80
+  - protocol: "TCP"
+    name: "debug"
+    port: 5679
+    targetPort: 5678
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-plain-dep
+spec:
+  selector:
+    matchLabels:
+      app: helloworldapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helloworldapp
+    spec:
+      containers:
+      - name: helloworldapp
+        image: helloworldapp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
